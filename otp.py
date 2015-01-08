@@ -10,31 +10,39 @@
 import os
 import sys		# Necessary for getting arguments
 import time		# Necessary for time-based filename
+from optparse import OptionParser
 
 infile = ''
 outfile = ''
 key = ''
 decrypt = False
 encrypt = False
-usageMsg = "Usage: python otp.py (-e | --encrypt | -d | --decrypt) -i <inputfile> [-k <keyfile>] [-o <outputfile>]\n\t" \
-+ "Choose either encrypt or decrypt. For decrypt, a keyfile is required."
+usage = "Usage: otp.py {-e | --encrypt | -d | --decrypt} -i <INPUTFILE> [-k <KEYFILE>] [-o <OUTPUTFILE>]\n" \
++ "       Choose either encrypt or decrypt. For decrypt, a keyfile is required."
 
 # Parse arguments
-for i in range(1, len(sys.argv)): 
-	if (sys.argv[i] == "-d" or sys.argv[i] == "--decrypt"):
-		decrypt = True
-	elif (sys.argv[i] == "-e" or sys.argv[i] == "--encrypt"):
-		encrypt = True
-	elif (sys.argv[i] == "-i"):
-		infile = sys.argv[i+1]
-	elif (sys.argv[i] == "-o"):
-		outfile = sys.argv[i+1]
-	elif (sys.argv[i] == "-k"):
-		key = sys.argv[i+1]
+parser = OptionParser(usage=usage)
+parser.add_option("-d", "--decrypt", action="store_true", dest="decrypt", default=False,
+                  help="Decrypt a file")
+parser.add_option("-e", "--encrypt", action="store_true", dest="encrypt", default=False,
+                  help="Encrypt a file")
+parser.add_option("-i", action="store", type="string", dest="infile", metavar="INPUTFILE",
+                  default='', help="Input file for encryption or decryption")
+parser.add_option("-k", action="store", type="string", dest="key", metavar="KEYFILE", default='', 
+                  help="Decryption keyfile")
+parser.add_option("-o", action="store", type="string", dest="outfile", metavar="OUTPUTFILE",
+                  default='', help="File name for output of encryption or decryption")
+
+(options, args) = parser.parse_args()
+decrypt = options.decrypt
+encrypt = options.encrypt
+infile  = options.infile
+outfile = options.outfile
+key     = options.key
 
 # Validate arguments
 if ((decrypt == False and encrypt == False) or (decrypt == True and encrypt == True) or infile == ''):
-	print usageMsg
+	print usage
 	exit()
 elif (decrypt == True and key == ''):
 	key = raw_input("Please enter name for the keyfile, or q to quit: ")
