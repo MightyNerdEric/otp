@@ -43,14 +43,14 @@ key     = options.key
 # Validate arguments
 if ((decrypt == False and encrypt == False) or (decrypt == True and encrypt == True) or infile == ''):
 	print usage
-	exit()
+	exit(0)
 elif (decrypt == True and key == ''):
 	key = raw_input("Please enter name for the keyfile, or q to quit: ")
 	if (key == 'q'):
-		exit()
+		exit(0)
 elif (encrypt == True and key != ''):
 	print "It's not really a \"one-time\" pad if you use an old keyfile. Exiting..."
-	exit()
+	exit(1)
    
 # Encrypt function
 if (encrypt == True):
@@ -71,6 +71,7 @@ if (encrypt == True):
 	outfp.write(buf)
 	outfp.close()
 	open(str(time.clock()), "wb").write(otp)
+	exit(0)
 	
 # Decrypt function
 elif (decrypt == True):
@@ -87,8 +88,8 @@ elif (decrypt == True):
 		outfp = open(outfile, "wb")
 	outfp.write(buf)
 	outfp.close()
-	exit()
+	exit(0)
 
 else:
 	print "Something went horribly, horribly wrong."
-	exit()
+	exit(1)
